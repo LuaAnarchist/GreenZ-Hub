@@ -69,7 +69,7 @@ shared.LoaderTitle = ''
 local Metadata = {
     LoaderData = {
         Colors = shared.LoaderColors or {
-            Main = Color3.fromRGB(200, 200, 200),
+            Main = Color3.fromRGB(40, 40, 40),
             LoaderBackground = Color3.fromRGB(3, 252, 3),
         }
     },
@@ -122,7 +122,7 @@ local Main = CreateObject("Frame", {
     BackgroundColor3 = Metadata.LoaderData.Colors.Main,
     BorderSizePixel = 3,
     ClipsDescendants = true,
-    Position = UDim2.new(0.5, 0, 0.5, 0),
+    Position = UDim2.new(40, 40, 40),
     AnchorPoint = Vector2.new(0.5, 0.5),
     Size = UDim2.new(0, 0, 0, 0),
 })
@@ -144,7 +144,7 @@ local UserName = CreateObject("TextLabel", {
     Position = UDim2.new(0, 80, 0, 10),
     Size = UDim2.new(0, 240, 0, 50),
     Font = Enum.Font.GothamBold,
-    TextColor3 = Color3.fromRGB(255, 255, 255),
+    TextColor3 = Color3.fromRGB(0, 0, 0),
     TextStrokeTransparency = 0,
     TextStrokeColor3 = Color3.fromRGB(0, 0, 0),
     TextSize = 16,
@@ -232,6 +232,7 @@ local Window = Fluent:CreateWindow({
 local Tabs = {
     Shop=Window:AddTab({ Title="Tab Shop" }),
     Main=Window:AddTab({ Title="Tab Farming" }),
+    Setting=Window:AddTab({ Title="Tab Setting" }),
     Stack=Window:AddTab({ Title="Tab Stack Farming" }),
     Sub=Window:AddTab({ Title="Tab Sub Farming" }),
 }
@@ -2856,24 +2857,6 @@ spawn(function()
         end
     end
 end)
-local ToggleRandomBone = Tabs.Main:AddToggle("ToggleRandomBone", {Title="Random Xương",Description="", Default=false })
-ToggleRandomBone:OnChanged(function(Value)  
-        _G.AutoRandomBone=Value
-end)
-Options.ToggleRandomBone:SetValue(false)
-spawn(function()
-    while wait() do
-    if _G.AutoRandomBone then
-    local args = {
-     [1]="Bones",
-     [2]="Buy",
-     [3]=1,
-     [4]=1
-    }
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-    end
-    end
-    end)
    local ToggleCake = Tabs.Main:AddToggle("ToggleCake", {
     Title = "Auto Farm CakePrince",
     Description = "", 
@@ -3023,4 +3006,136 @@ spawn(function()
       game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
     end
   end
+end)
+local ToggleBringMob = Tabs.Setting:AddToggle("ToggleBringMob", {Title="Gom Quái",Description="", Default=true})
+ToggleBringMob:OnChanged(function(Value)
+    _G.BringMob = Value
+end)
+Options.ToggleBringMob:SetValue(true)
+spawn(function()
+    while wait() do
+        pcall(function()
+            for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                if _G.BringMob and bringmob then
+                    if v.Name == MonFarm and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+                        if v.Name == "Factory Staff" then
+                            if (v.HumanoidRootPart.Position - FarmPos.Position).Magnitude <= 1000000000 then
+                                v.Head.CanCollide = false
+                                v.HumanoidRootPart.CanCollide = false
+                                v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                                v.HumanoidRootPart.CFrame = FarmPos
+                                if v.Humanoid:FindFirstChild("Animator") then
+                                    v.Humanoid.Animator:Destroy()
+                                end
+                                sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
+                            end
+                        elseif v.Name == MonFarm then
+                            if (v.HumanoidRootPart.Position - FarmPos.Position).Magnitude <= 1000000000 then
+                                v.HumanoidRootPart.CFrame = FarmPos
+                                v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                                v.HumanoidRootPart.Transparency = 1
+                                v.Humanoid.JumpPower = 0
+                                v.Humanoid.WalkSpeed = 0
+                                if v.Humanoid:FindFirstChild("Animator") then
+                                    v.Humanoid.Animator:Destroy()
+                                end
+                                v.HumanoidRootPart.CanCollide = false
+                                v.Head.CanCollide = false
+                                v.Humanoid:ChangeState(11)
+                                v.Humanoid:ChangeState(14)
+                                sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
+                            end
+                        end
+                    end
+                end
+            end
+        end)
+    end
+end)
+local DropdownSelectWeapon = Tabs.Setting:AddDropdown("DropdownSelectWeapon", {
+    Title = "Select Weapon",
+    Description = "",
+    Values = {'Melee', 'Sword', 'Blox Fruit'},
+    Multi = false,
+    Default = 1,
+})
+DropdownSelectWeapon:SetValue('Melee')
+DropdownSelectWeapon:OnChanged(function(Value)
+    ChooseWeapon = Value
+end)
+task.spawn(function()
+    while wait() do
+        pcall(function()
+            if ChooseWeapon == "Melee" then
+                for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                    if v.ToolTip == "Melee" then
+                        if game.Players.LocalPlayer.Backpack:FindFirstChild(tostring(v.Name)) then
+                            SelectWeapon = v.Name
+                        end
+                    end
+                end
+            elseif ChooseWeapon == "Sword" then
+                for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                    if v.ToolTip == "Sword" then
+                        if game.Players.LocalPlayer.Backpack:FindFirstChild(tostring(v.Name)) then
+                            SelectWeapon = v.Name
+                        end
+                    end
+                end
+            elseif ChooseWeapon == "Blox Fruit" then
+                for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                    if v.ToolTip == "Blox Fruit" then
+                        if game.Players.LocalPlayer.Backpack:FindFirstChild(tostring(v.Name)) then
+                            SelectWeapon = v.Name
+                        end
+                    end
+                end
+            end
+        end)
+    end
+end)
+local ToggleBringMob = Tabs.Setting:AddToggle("ToggleBringMob", {Title="Gom Quái",Description="", Default=true})
+ToggleBringMob:OnChanged(function(Value)
+    _G.BringMob = Value
+end)
+Options.ToggleBringMob:SetValue(true)
+spawn(function()
+    while wait() do
+        pcall(function()
+            for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
+                if _G.BringMob and bringmob then
+                    if v.Name == MonFarm and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+                        if v.Name == "Factory Staff" then
+                            if (v.HumanoidRootPart.Position - FarmPos.Position).Magnitude <= 1000000000 then
+                                v.Head.CanCollide = false
+                                v.HumanoidRootPart.CanCollide = false
+                                v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                                v.HumanoidRootPart.CFrame = FarmPos
+                                if v.Humanoid:FindFirstChild("Animator") then
+                                    v.Humanoid.Animator:Destroy()
+                                end
+                                sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
+                            end
+                        elseif v.Name == MonFarm then
+                            if (v.HumanoidRootPart.Position - FarmPos.Position).Magnitude <= 1000000000 then
+                                v.HumanoidRootPart.CFrame = FarmPos
+                                v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                                v.HumanoidRootPart.Transparency = 1
+                                v.Humanoid.JumpPower = 0
+                                v.Humanoid.WalkSpeed = 0
+                                if v.Humanoid:FindFirstChild("Animator") then
+                                    v.Humanoid.Animator:Destroy()
+                                end
+                                v.HumanoidRootPart.CanCollide = false
+                                v.Head.CanCollide = false
+                                v.Humanoid:ChangeState(11)
+                                v.Humanoid:ChangeState(14)
+                                sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
+                            end
+                        end
+                    end
+                end
+            end
+        end)
+    end
 end)
