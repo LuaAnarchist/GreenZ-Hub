@@ -234,8 +234,8 @@ local Tabs = {
     Main=Window:AddTab({ Title="Tab Farming" }),
     Setting=Window:AddTab({ Title="Tab Setting" }),
     Vocalno=Window:AddTab({ Title="Tab Volcano" }),
-    Stack=Window:AddTab({ Title="Tab Stack Farming" }),
-    Sub=Window:AddTab({ Title="Tab Sub Farming" }),
+    Stack=Window:AddTab({ Title="Tab Stack Farming(Updating)" }),
+    Sub=Window:AddTab({ Title="Tab Sub Farming(Updating)" }),
 }
 local Options = Fluent.Options
 local id = game.PlaceId
@@ -2542,7 +2542,7 @@ Tabs.Shop:AddButton({
         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BlackbeardReward","Slingshot","2")
     end
 })
-local Mastery = Tabs.Shop:AddSection("Phụ Kiện")
+local Mastery = Tabs.Shop:AddSection("Accessory")
 Tabs.Shop:AddButton({
     Title="Black Cape",
     Description="",
@@ -2861,7 +2861,7 @@ spawn(function()
 end)
 local KataFarm = Tabs.Main:AddSection("Cake Prince")
 local Mob_Kill_Cake_Prince = Tabs.Main:AddParagraph({
-    Title="Trạng Thái Nó Ra",
+    Title="Status CakePrince",
     Content=""
 })
 spawn(function()
@@ -2915,7 +2915,7 @@ spawn(function()
                             end    
                         end    
                     else
-                        Tween(CFrame.new(-2009.2802734375, 4532.97216796875, -14937.3076171875)) 
+                        Tween(CFrame.new(-2116.40308, 66.0019989, -12270.6396, -0.258864403, 0, 0.965913713, 0, 1, 0, -0.965913713, 0, -0.258864403)) 
                     end
                 else
                     if game.Workspace.Enemies:FindFirstChild("Baking Staff") or game.Workspace.Enemies:FindFirstChild("Head Baker") or game.Workspace.Enemies:FindFirstChild("Cake Guard") or game.Workspace.Enemies:FindFirstChild("Cookie Crafter") then
@@ -3118,7 +3118,7 @@ spawn(function()
     end
     end)
 local Volcano = Tabs.Vocalno:AddSection("Prehistoric Island")
-local Prehistoric = Tabs.Sea:AddParagraph({
+local Prehistoric = Tabs.Volcano:AddParagraph({
     Title="Status Prehistoric",
     Content=""
 })
@@ -3227,7 +3227,7 @@ end)
             return;
         end
     end)
-local ToggleTPVolcano = Tabs.Sea:AddToggle("ToggleTPVolcano", { 
+local ToggleTPVolcano = Tabs.Vocalno:AddToggle("ToggleTPVolcano", { 
     Title="Teleport To Volcano", 
     Description="", 
     Default=false 
@@ -3256,7 +3256,7 @@ spawn(function()
         end
     end
 end)
-local ToggleDefendVolcano = Tabs.Sea:AddToggle("ToggleDefendVolcano", {
+local ToggleDefendVolcano = Tabs.Vocalno:AddToggle("ToggleDefendVolcano", {
     Title = "Defend Volcano", 
     Description = "", 
     Default = false
@@ -3264,7 +3264,7 @@ local ToggleDefendVolcano = Tabs.Sea:AddToggle("ToggleDefendVolcano", {
 ToggleDefendVolcano:OnChanged(function(Value)
     _G.AutoDefendVolcano = Value
 end)
-local ToggleMelee = Tabs.Sea:AddToggle("ToggleMelee", {
+local ToggleMelee = Tabs.Vocalno:AddToggle("ToggleMelee", {
     Title = "Use Melee(Dragon Talon Is Good)", 
     Description = "", 
     Default = false
@@ -3272,7 +3272,7 @@ local ToggleMelee = Tabs.Sea:AddToggle("ToggleMelee", {
 ToggleMelee:OnChanged(function(Value)
     _G.UseMelee = Value
 end)
-local ToggleSword = Tabs.Sea:AddToggle("ToggleSword", {
+local ToggleSword = Tabs.Vocalno:AddToggle("ToggleSword", {
     Title = "Use Sword", 
     Description = "", 
     Default = false
@@ -3280,7 +3280,7 @@ local ToggleSword = Tabs.Sea:AddToggle("ToggleSword", {
 ToggleSword:OnChanged(function(Value)
     _G.UseSword = Value
 end)
-local ToggleGun = Tabs.Sea:AddToggle("ToggleGun", {
+local ToggleGun = Tabs.Vocalno:AddToggle("ToggleGun", {
     Title = "Use Gun(Error)", 
     Description = "", 
     Default = false
@@ -3382,7 +3382,7 @@ spawn(function()
         end
     end
 end)
-local ToggleKillAura = Tabs.Sea:AddToggle("ToggleKillAura", {Title="Kill Golem",Description="", Default=false })
+local ToggleKillAura = Tabs.Vocalno:AddToggle("ToggleKillAura", {Title="Kill Golem",Description="", Default=false })
 ToggleKillAura:OnChanged(function(Value)
     KillAura=Value
 end)
@@ -3404,7 +3404,7 @@ spawn(function()
         end
     end
 end)
-local ToggleCollectBone = Tabs.Sea:AddToggle("ToggleCollectBone", {
+local ToggleCollectBone = Tabs.Vocalno:AddToggle("ToggleCollectBone", {
     Title="Collect Bone", 
     Description="", 
     Default=false
@@ -3423,7 +3423,7 @@ spawn(function()
         end
     end
 end)
-local ToggleCollectEgg = Tabs.Sea:AddToggle("ToggleCollectEgg", {
+local ToggleCollectEgg = Tabs.Vocalno:AddToggle("ToggleCollectEgg", {
     Title = "Collect Egg",
     Description = "",
     Default = false
@@ -3455,5 +3455,149 @@ end)
 Fluent:Notify({
     Title="GreenZ Hub",
     Content="Done Load Code",
-    Duration=10
+    Duration=1
 })
+_G.FastAttack = true
+
+if _G.FastAttack then
+    local _ENV = (getgenv or getrenv or getfenv)()
+
+    local function SafeWaitForChild(parent, childName)
+        local success, result = pcall(function()
+            return parent:WaitForChild(childName)
+        end)
+        if not success or not result then
+            warn("noooooo: " .. childName)
+        end
+        return result
+    end
+
+    local function WaitChilds(path, ...)
+        local last = path
+        for _, child in {...} do
+            last = last:FindFirstChild(child) or SafeWaitForChild(last, child)
+            if not last then break end
+        end
+        return last
+    end
+
+    local VirtualInputManager = game:GetService("VirtualInputManager")
+    local CollectionService = game:GetService("CollectionService")
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    local TeleportService = game:GetService("TeleportService")
+    local RunService = game:GetService("RunService")
+    local Players = game:GetService("Players")
+    local Player = Players.LocalPlayer
+
+    if not Player then
+        warn("Không tìm thấy người chơi cục bộ.")
+        return
+    end
+
+    local Remotes = SafeWaitForChild(ReplicatedStorage, "Remotes")
+    if not Remotes then return end
+
+    local Validator = SafeWaitForChild(Remotes, "Validator")
+    local CommF = SafeWaitForChild(Remotes, "CommF_")
+    local CommE = SafeWaitForChild(Remotes, "CommE")
+
+    local ChestModels = SafeWaitForChild(workspace, "ChestModels")
+    local WorldOrigin = SafeWaitForChild(workspace, "_WorldOrigin")
+    local Characters = SafeWaitForChild(workspace, "Characters")
+    local Enemies = SafeWaitForChild(workspace, "Enemies")
+    local Map = SafeWaitForChild(workspace, "Map")
+
+    local EnemySpawns = SafeWaitForChild(WorldOrigin, "EnemySpawns")
+    local Locations = SafeWaitForChild(WorldOrigin, "Locations")
+
+    local RenderStepped = RunService.RenderStepped
+    local Heartbeat = RunService.Heartbeat
+    local Stepped = RunService.Stepped
+
+    local Modules = SafeWaitForChild(ReplicatedStorage, "Modules")
+    local Net = SafeWaitForChild(Modules, "Net")
+
+    local sethiddenproperty = sethiddenproperty or function(...) return ... end
+    local setupvalue = setupvalue or (debug and debug.setupvalue)
+    local getupvalue = getupvalue or (debug and debug.getupvalue)
+
+    local Settings = {
+        AutoClick = true,
+        ClickDelay = 0,
+    }
+
+    local Module = {}
+
+    Module.FastAttack = (function()
+        if _ENV.rz_FastAttack then
+            return _ENV.rz_FastAttack
+        end
+
+        local FastAttack = {
+            Distance = 100,
+            attackMobs = true,
+            attackPlayers = true,
+            Equipped = nil
+        }
+
+        local RegisterAttack = SafeWaitForChild(Net, "RE/RegisterAttack")
+        local RegisterHit = SafeWaitForChild(Net, "RE/RegisterHit")
+
+        local function IsAlive(character)
+        return character and character:FindFirstChild("Humanoid") and character.Humanoid.Health > 0
+        end
+
+        local function ProcessEnemies(OthersEnemies, Folder)
+            local BasePart = nil
+            for _, Enemy in Folder:GetChildren() do
+                local Head = Enemy:FindFirstChild("Head")
+                if Head and IsAlive(Enemy) and Player:DistanceFromCharacter(Head.Position) < FastAttack.Distance then
+                    if Enemy ~= Player.Character then
+                        table.insert(OthersEnemies, { Enemy, Head })
+                        BasePart = Head
+                    end
+                end
+            end
+            return BasePart
+        end
+
+        function FastAttack:Attack(BasePart, OthersEnemies)
+            if not BasePart or #OthersEnemies == 0 then return end
+            RegisterAttack:FireServer(Settings.ClickDelay or 0)
+            RegisterHit:FireServer(BasePart, OthersEnemies)
+        end
+
+        function FastAttack:AttackNearest()
+            local OthersEnemies = {}
+            local Part1 = ProcessEnemies(OthersEnemies, Enemies)
+            local Part2 = ProcessEnemies(OthersEnemies, Characters)
+            if #OthersEnemies > 0 then
+                self:Attack(Part1 or Part2, OthersEnemies)
+            else
+                task.wait(0)
+            end
+        end
+
+        function FastAttack:BladeHits()
+            local Equipped = IsAlive(Player.Character) and Player.Character:FindFirstChildOfClass("Tool")
+            if Equipped and Equipped.ToolTip ~= "Gun" then
+                self:AttackNearest()
+            else
+                task.wait(0)
+            end
+        end
+
+        task.spawn(function()
+            while task.wait(Settings.ClickDelay) do
+                if Settings.AutoClick then
+                    FastAttack:BladeHits()
+                end
+            end
+        end)
+
+        _ENV.rz_FastAttack = FastAttack
+        return FastAttack
+    end)()
+end
+
+
