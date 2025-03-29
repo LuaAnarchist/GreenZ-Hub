@@ -233,6 +233,7 @@ local Tabs = {
     Shop=Window:AddTab({ Title="Tab Shop" }),
     Main=Window:AddTab({ Title="Tab Farming" }),
     Setting=Window:AddTab({ Title="Tab Setting" }),
+    Vocalno=Window:AddTab({ Title="Tab Volcano" }),
     Stack=Window:AddTab({ Title="Tab Stack Farming" }),
     Sub=Window:AddTab({ Title="Tab Sub Farming" }),
 }
@@ -2761,8 +2762,9 @@ local ToggleLevel = Tabs.Main:AddToggle("ToggleLevel", {
           end)
         end
         end
-        end)        
-local ToggleBone = Tabs.Main:AddToggle("ToggleBone", {
+        end)
+local MiscFarm = Tabs.Main:AddSection("Bone Farm")
+        local ToggleBone = Tabs.Main:AddToggle("ToggleBone", {
     Title="Auto Farm Bone",
     Description="", 
     Default=false })
@@ -2857,6 +2859,27 @@ spawn(function()
         end
     end
 end)
+local KataFarm = Tabs.Main:AddSection("Cake Prince")
+local Mob_Kill_Cake_Prince = Tabs.Main:AddParagraph({
+    Title="Trạng Thái Nó Ra",
+    Content=""
+})
+spawn(function()
+    while wait() do
+        pcall(function()
+            if string.len(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("CakePrinceSpawner"))==88 then
+                Mob_Kill_Cake_Prince:SetDesc("Còn: "..string.sub(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("CakePrinceSpawner"),39,41).."")
+            elseif string.len(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("CakePrinceSpawner"))==87 then
+                Mob_Kill_Cake_Prince:SetDesc("Còn: "..string.sub(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("CakePrinceSpawner"),39,40).."")
+            elseif string.len(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("CakePrinceSpawner"))==86 then
+                Mob_Kill_Cake_Prince:SetDesc("Còn: "..string.sub(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("CakePrinceSpawner"),39,39).." ")
+            else
+                Mob_Kill_Cake_Prince:SetDesc(" : ✅️")
+            end
+        end)
+    end
+end)
+
    local ToggleCake = Tabs.Main:AddToggle("ToggleCake", {
     Title = "Auto Farm CakePrince",
     Description = "", 
@@ -3007,51 +3030,6 @@ spawn(function()
     end
   end
 end)
-local ToggleBringMob = Tabs.Setting:AddToggle("ToggleBringMob", {Title="Gom Quái",Description="", Default=true})
-ToggleBringMob:OnChanged(function(Value)
-    _G.BringMob = Value
-end)
-Options.ToggleBringMob:SetValue(true)
-spawn(function()
-    while wait() do
-        pcall(function()
-            for i, v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                if _G.BringMob and bringmob then
-                    if v.Name == MonFarm and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
-                        if v.Name == "Factory Staff" then
-                            if (v.HumanoidRootPart.Position - FarmPos.Position).Magnitude <= 1000000000 then
-                                v.Head.CanCollide = false
-                                v.HumanoidRootPart.CanCollide = false
-                                v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                                v.HumanoidRootPart.CFrame = FarmPos
-                                if v.Humanoid:FindFirstChild("Animator") then
-                                    v.Humanoid.Animator:Destroy()
-                                end
-                                sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
-                            end
-                        elseif v.Name == MonFarm then
-                            if (v.HumanoidRootPart.Position - FarmPos.Position).Magnitude <= 1000000000 then
-                                v.HumanoidRootPart.CFrame = FarmPos
-                                v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
-                                v.HumanoidRootPart.Transparency = 1
-                                v.Humanoid.JumpPower = 0
-                                v.Humanoid.WalkSpeed = 0
-                                if v.Humanoid:FindFirstChild("Animator") then
-                                    v.Humanoid.Animator:Destroy()
-                                end
-                                v.HumanoidRootPart.CanCollide = false
-                                v.Head.CanCollide = false
-                                v.Humanoid:ChangeState(11)
-                                v.Humanoid:ChangeState(14)
-                                sethiddenproperty(game.Players.LocalPlayer, "SimulationRadius", math.huge)
-                            end
-                        end
-                    end
-                end
-            end
-        end)
-    end
-end)
 local DropdownSelectWeapon = Tabs.Setting:AddDropdown("DropdownSelectWeapon", {
     Title = "Select Weapon",
     Description = "",
@@ -3138,4 +3116,344 @@ spawn(function()
             end
         end)
     end
+    end)
+local Volcano = Tabs.Vocalno:AddSection("Prehistoric Island")
+local Prehistoric = Tabs.Sea:AddParagraph({
+    Title="Status Prehistoric",
+    Content=""
+})
+spawn(function()
+    pcall(function()
+        while wait() do
+            if game:GetService("Workspace").Map:FindFirstChild("PrehistoricIsland") then
+                Prehistoric:SetDesc("Prehistoric: ✅️")
+            else
+                Prehistoric:SetDesc("Prehistoric: ❌️")
+            end
+        end
+    end)
 end)
+    local v510 = Tabs.Vocalno:AddToggle("AutoFindPrehistoric", {
+        Title = "Auto Find Prehistoric",
+        Description = "",
+        Default = false
+    });
+    v17.AutoFindPrehistoric:SetValue(false);
+    v510:OnChanged(function(v584)
+        _G.AutoFindPrehistoric = v584;
+    end);
+    local v511 = {};
+    local v512 = false;
+    local v513 = false;
+    v505.RenderStepped:Connect(function()
+        if not _G.AutoFindPrehistoric then
+            v513 = false;
+            return;
+        end
+        local v585 = v504.LocalPlayer;
+        local v586 = v585.Character;
+        if (not v586 or not v586:FindFirstChild("Humanoid")) then
+            return;
+        end
+        local function v587()
+            if v512 then
+                return;
+            end
+            v512 = true;
+            for v769, v770 in pairs(v511) do
+                if (v770 and v770.Parent and (v770.Name == "VehicleSeat") and not v770.Occupant) then
+                    Tween2(v770.CFrame);
+                    break;
+                end
+            end
+            v512 = false;
+        end
+        local v588 = v586.Humanoid;
+        local v589 = false;
+        local v590 = nil;
+        for v684, v685 in pairs(v507.Boats:GetChildren()) do
+            local v686 = v685:FindFirstChild("VehicleSeat");
+            if (v686 and (v686.Occupant == v588)) then
+                v589 = true;
+                v590 = v686;
+                v511[v685.Name] = v686;
+            elseif (v686 and (v686.Occupant == nil)) then
+                v587();
+            end
+        end
+        if not v589 then
+            return;
+        end
+        v590.MaxSpeed = v508;
+        v590.CFrame = CFrame.new(Vector3.new(v590.Position.X, v590.Position.Y, v590.Position.Z)) * v590.CFrame.Rotation ;
+        v506:SendKeyEvent(true, "W", false, game);
+        for v687, v688 in pairs(v507.Boats:GetDescendants()) do
+            if v688:IsA("BasePart") then
+                v688.CanCollide = false;
+            end
+        end
+        for v689, v690 in pairs(v586:GetDescendants()) do
+            if v690:IsA("BasePart") then
+                v690.CanCollide = false;
+            end
+        end
+        local v593 = {
+            "ShipwreckIsland",
+            "SandIsland",
+            "TreeIsland",
+            "TinyIsland",
+            "MysticIsland",
+            "KitsuneIsland",
+            "FrozenDimension"
+        };
+        for v691, v692 in ipairs(v593) do
+            local v693 = v507.Map:FindFirstChild(v692);
+            if (v693 and v693:IsA("Model")) then
+                v693:Destroy();
+            end
+        end
+        local v594 = v507.Map:FindFirstChild("PrehistoricIsland");
+        if v594 then
+            v506:SendKeyEvent(false, "W", false, game);
+            _G.AutoFindPrehistoric = false;
+            if not v513 then
+                v14:Notify({
+                    Title = "GreenZ Hub",
+                    Content = "Volcano Spawner!",
+                    Duration = 10
+                });
+                v513 = true;
+            end
+            return;
+        end
+    end)
+local ToggleTPVolcano = Tabs.Sea:AddToggle("ToggleTPVolcano", { 
+    Title="Teleport To Volcano", 
+    Description="", 
+    Default=false 
+})
+ToggleTPVolcano:OnChanged(function(Value)
+    _G.TweenToPrehistoric=Value
+end)
+Options.ToggleTPVolcano:SetValue(false)
+spawn(function()
+    local island
+    while not island do
+        island=game:GetService("Workspace").Map:FindFirstChild("PrehistoricIsland")
+        wait()
+    end
+    while wait() do
+        if _G.TweenToPrehistoric then
+            local prehistoricIslandCore = game:GetService("Workspace").Map:FindFirstChild("PrehistoricIsland")
+            if prehistoricIslandCore then
+                local relic = prehistoricIslandCore:FindFirstChild("Core") and prehistoricIslandCore.Core:FindFirstChild("PrehistoricRelic")
+                local skull = relic and relic:FindFirstChild("Skull")
+                if skull then
+                    Tween2(CFrame.new(skull.Position))
+                    _G.TweenToPrehistoric=false
+                end
+            end
+        end
+    end
+end)
+local ToggleDefendVolcano = Tabs.Sea:AddToggle("ToggleDefendVolcano", {
+    Title = "Defend Volcano", 
+    Description = "", 
+    Default = false
+})
+ToggleDefendVolcano:OnChanged(function(Value)
+    _G.AutoDefendVolcano = Value
+end)
+local ToggleMelee = Tabs.Sea:AddToggle("ToggleMelee", {
+    Title = "Use Melee(Dragon Talon Is Good)", 
+    Description = "", 
+    Default = false
+})
+ToggleMelee:OnChanged(function(Value)
+    _G.UseMelee = Value
+end)
+local ToggleSword = Tabs.Sea:AddToggle("ToggleSword", {
+    Title = "Use Sword", 
+    Description = "", 
+    Default = false
+})
+ToggleSword:OnChanged(function(Value)
+    _G.UseSword = Value
+end)
+local ToggleGun = Tabs.Sea:AddToggle("ToggleGun", {
+    Title = "Use Gun(Error)", 
+    Description = "", 
+    Default = false
+})
+ToggleGun:OnChanged(function(Value)
+    _G.UseGun = Value
+end)
+local function useSkill(skillKey)
+    game:GetService("VirtualInputManager"):SendKeyEvent(true, skillKey, false, game)
+    game:GetService("VirtualInputManager"):SendKeyEvent(false, skillKey, false, game)
+end
+local function removeLava()
+    local interiorLavaModel = game.Workspace.Map.PrehistoricIsland.Core:FindFirstChild("InteriorLava")
+    if interiorLavaModel and interiorLavaModel:IsA("Model") then
+        interiorLavaModel:Destroy()
+    end
+    local prehistoricIsland1 = game.Workspace.Map:FindFirstChild("PrehistoricIsland")
+    if prehistoricIsland1 then
+        for _, descendant in pairs(prehistoricIsland1:GetDescendants()) do
+            if descendant:IsA("Part") and descendant.Name:lower():find("lava") then
+                descendant:Destroy()
+            end
+        end
+    end
+    local prehistoricIsland2 = game.Workspace.Map:FindFirstChild("PrehistoricIsland")
+    if prehistoricIsland2 then
+        for _, model in pairs(prehistoricIsland2:GetDescendants()) do
+            if model:IsA("Model") then
+                for _, child in pairs(model:GetDescendants()) do
+                    if child:IsA("MeshPart") and child.Name:lower():find("lava") then
+                        child:Destroy()
+                    end
+                end
+            end
+        end
+    end
+end
+local function findValidRock()
+    local volcanoRocksFolder = game.Workspace.Map.PrehistoricIsland.Core.VolcanoRocks
+    for _, Rock in pairs(volcanoRocksFolder:GetChildren()) do
+        if Rock:IsA("Model") then
+            local volcanorock = Rock:FindFirstChild("volcanorock")
+            if volcanorock and volcanorock:IsA("MeshPart") then
+                local color = volcanorock.Color
+                if color == Color3.fromRGB(185, 53, 56) or color == Color3.fromRGB(185, 53, 57) then
+                    return volcanorock
+                end
+            end
+        end
+    end
+    return nil 
+end
+local function equipAndUseSkill(toolType)
+    local player = game.Players.LocalPlayer
+    local backpack = player.Backpack
+    for _, item in pairs(backpack:GetChildren()) do
+        if item:IsA("Tool") and item.ToolTip == toolType then
+            item.Parent = player.Character 
+            for _, skill in ipairs({"Z", "X", "C", "V", "F"}) do
+                wait() 
+                pcall(function() useSkill(skill) end) 
+            end
+            item.Parent = backpack
+            break
+        end
+    end
+end
+spawn(function()
+    while wait() do
+        if _G.AutoDefendVolcano then
+            AutoHaki() 
+            pcall(removeLava) 
+            local currentTarget = findValidRock() 
+            if currentTarget then
+                local targetPosition = CFrame.new(currentTarget.Position + Vector3.new(0, 0, 0))
+                Tween2(targetPosition) 
+                local color = currentTarget.Color
+                if color ~= Color3.fromRGB(185, 53, 56) and color ~= Color3.fromRGB(185, 53, 57) then
+                    currentTarget = findValidRock() 
+                else
+                    local currentPosition = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+                    local distance = (currentPosition - currentTarget.Position - Vector3.new(0, 0, 0)).Magnitude
+                    if distance <= 1 then
+                        if _G.UseMelee then
+                            equipAndUseSkill("Melee")
+                        end
+                        if _G.UseSword then
+                            equipAndUseSkill("Sword")
+                        end
+                        if _G.UseGun then
+                            equipAndUseSkill("Gun")
+                        end
+                    end
+                    _G.TweenToPrehistoric = false
+                end
+            else
+                _G.TweenToPrehistoric = true
+            end
+        end
+    end
+end)
+local ToggleKillAura = Tabs.Sea:AddToggle("ToggleKillAura", {Title="Kill Golem",Description="", Default=false })
+ToggleKillAura:OnChanged(function(Value)
+    KillAura=Value
+end)
+Options.ToggleKillAura:SetValue(false)
+spawn(function()
+    while wait() do
+        if KillAura then
+            pcall(function()
+                for i,v in pairs(game.Workspace.Enemies:GetDescendants()) do
+                    if v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health>0 then
+                        repeat task.wait()
+                            sethiddenproperty(game:GetService('Players').LocalPlayer,"SimulationRadius",math.huge)
+                            v.Humanoid.Health=0
+                            v.HumanoidRootPart.CanCollide=false
+                        until not KillAura or not v.Parent or v.Humanoid.Health<=0
+                    end
+                end
+            end)
+        end
+    end
+end)
+local ToggleCollectBone = Tabs.Sea:AddToggle("ToggleCollectBone", {
+    Title="Collect Bone", 
+    Description="", 
+    Default=false
+})
+ToggleCollectBone:OnChanged(function(Value)
+    _G.AutoCollectBone=Value
+end)
+spawn(function()
+    while wait() do
+        if _G.AutoCollectBone then
+            for _, obj in pairs(workspace:GetDescendants()) do
+                if obj:IsA("BasePart") and obj.Name=="DinoBone" then
+                    Tween2(CFrame.new(obj.Position))
+                end
+            end
+        end
+    end
+end)
+local ToggleCollectEgg = Tabs.Sea:AddToggle("ToggleCollectEgg", {
+    Title = "Collect Egg",
+    Description = "",
+    Default = false
+})
+ToggleCollectEgg:OnChanged(function(Value)
+    _G.AutoCollectEgg = Value
+end)
+spawn(function()
+    while wait() do
+        if _G.AutoCollectEgg then
+            local dragonEggs = workspace.Map.PrehistoricIsland.Core.SpawnedDragonEggs:GetChildren()
+            if #dragonEggs > 0 then
+                local randomEgg = dragonEggs[math.random(1, #dragonEggs)]
+                if randomEgg:IsA("Model") and randomEgg.PrimaryPart then
+                    Tween2(randomEgg.PrimaryPart.CFrame)
+                    local playerPosition = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+                    local eggPosition = randomEgg.PrimaryPart.Position
+                    local distance = (playerPosition - eggPosition).Magnitude
+                    if distance <= 1 then
+                        game:GetService("VirtualInputManager"):SendKeyEvent(true, "E", false, game)
+                        wait(1.5)
+                        game:GetService("VirtualInputManager"):SendKeyEvent(false, "E", false, game)
+                    end
+                end
+            end
+        end
+    end
+end)
+Fluent:Notify({
+    Title="GreenZ Hub",
+    Content="Done Load Code",
+    Duration=10
+})
